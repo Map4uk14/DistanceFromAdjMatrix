@@ -14,7 +14,7 @@ public abstract class HUB {
 
 
     public HUB() {
-        try (BufferedReader br = new BufferedReader(new FileReader("Matrix.csv"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("src/main/resources/Matrix.csv"))) {
             String line = br.readLine();
 
             len = line.split(";").length;

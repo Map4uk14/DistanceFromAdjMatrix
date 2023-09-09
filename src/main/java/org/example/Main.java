@@ -10,9 +10,8 @@ public class Main {
 
     public static void main(String[] args) {
         initUI();
-        //Hey Thanks for reading it! :)
+        //Hey fuckFE
     }
-
 
 
     private static void initMatrixMulti (int j, Matrix mtx)  {
