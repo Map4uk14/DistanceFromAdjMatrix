@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.ArrayList;
 public abstract class HUB {
 
-
+//haiiii
     protected int[][] finalResult;
     protected int[][] resultTemp;
     protected int[][] matrix;
