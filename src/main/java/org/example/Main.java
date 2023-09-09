@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) {
         initUI();
-        //Hey fuckFE
+        //Hey cutie! :3
     }
 
 
