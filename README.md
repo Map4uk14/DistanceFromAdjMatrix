@@ -1,81 +1,97 @@
 # DistanceFromAdjMatrix
 
-A Java application for analyzing graph properties using **adjacency matrix representation**. The tool computes distances between nodes, identifies critical vertices, and analyzes overall graph connectivity.
+A Java console application for analyzing **undirected graphs** represented as adjacency matrices. The graph is loaded from a CSV file and can be analyzed through an interactive menu.
 
 ## Features
 
-- **Shortest Path Computation** — calculates the shortest distance between any two nodes in a graph
-- **Critical Node Detection** — identifies nodes whose removal would disconnect the graph or significantly increase path lengths
-- **Connectivity Analysis** — determines whether the graph is fully connected and identifies connected components
-- **Adjacency Matrix Input** — graphs are represented and processed as adjacency matrices, supporting both weighted and unweighted graphs
+| # | Feature | Description |
+|---|---------|-------------|
+| 1 | **Matrix Power (Aⁿ)** | Computes the n-th power of the adjacency matrix via recursive matrix multiplication |
+| 2 | **Distance Matrix** | Calculates shortest distances between all node pairs using matrix powers |
+| 3 | **Eccentricities** | Computes the eccentricity of each node (max distance to any other node) |
+| 4 | **Radius / Diameter / Center** | Derives graph radius, diameter, and center nodes from eccentricities |
+| 5 | **Component Count** | Counts connected components using the path matrix |
+| 6 | **Path Matrix (Wegmatrix)** | Determines reachability between all node pairs |
+| 7 | **Articulation Points** | Finds nodes whose removal increases the number of connected components |
+| 8 | **Bridges** | Finds edges whose removal disconnects the graph |
 
-## Tech Stack
+## How It Works
 
-- **Language:** Java
-- **Build Tool:** Maven
-- **Algorithms:** BFS / Dijkstra (shortest paths), DFS (connectivity), recursive graph traversal
+The application uses **matrix multiplication** as its core primitive. Raising the adjacency matrix to power `k` reveals which node pairs are connected by a path of exactly length `k`. This is used to:
+- Build the **distance matrix** — the first `k` where `A^k[i][j] > 0` is the shortest distance
+- Build the **path matrix** — set `1` wherever any power `A^k[i][j] > 0`
 
-## Getting Started
-
-### Prerequisites
-
-- Java 11 or higher
-- Maven 3.6+
-
-### Installation
-
-```bash
-git clone https://github.com/Map4uk14/DistanceFromAdjMatrix.git
-cd DistanceFromAdjMatrix
-mvn clean install
-```
-
-### Run
-
-```bash
-mvn exec:java
-```
-
-Or run the compiled `.jar` directly:
-
-```bash
-java -jar target/DistanceFromAdjMatrix.jar
-```
-
-## Usage
-
-The program accepts a graph as an **adjacency matrix**, where each cell `[i][j]` represents the edge weight between node `i` and node `j`. A value of `0` (or `∞`) means no direct connection.
-
-**Example input (4-node graph):**
-
-```
-0 1 0 4
-1 0 2 0
-0 2 0 1
-4 0 1 0
-```
-
-**Example output:**
-
-```
-Shortest path from node 0 to node 3: 4 (via 0 → 2 → 3)
-Critical nodes: [2]
-Graph is fully connected: true
-```
+Articulation points and bridges are found by temporarily removing a node or edge and checking whether the component count increases.
 
 ## Project Structure
 
 ```
 src/
 └── main/
-    └── java/
-        └── ...        # Core graph analysis logic
-pom.xml                 # Maven build configuration
+    ├── java/org/example/
+    │   ├── Main.java       # Entry point & interactive console menu
+    │   ├── Matrix.java     # All graph algorithms
+    │   └── HUB.java        # Abstract base class — loads matrix from CSV
+    └── resources/
+        └── Matrix.csv      # Input graph (adjacency matrix, semicolon-separated)
+pom.xml
 ```
 
-## Background
+## Input Format
 
-This project was developed as part of coursework at **HTL Wien 5 Spengergasse** to explore graph theory concepts through practical implementation. The focus was on applying advanced data structures and recursive algorithms to solve real-world graph problems efficiently.
+The graph is defined in `src/main/resources/Matrix.csv` as a **semicolon-separated adjacency matrix** containing only `0` and `1`. Values ≥ 2 will cause an `IllegalArgumentException`.
+
+**Example — 4-node graph:**
+```
+0;1;0;1
+1;0;1;0
+0;1;0;1
+1;0;1;0
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Java 11+
+- Maven 3.6+
+
+### Build & Run
+
+```bash
+git clone https://github.com/Map4uk14/DistanceFromAdjMatrix.git
+cd DistanceFromAdjMatrix
+mvn clean package
+mvn exec:java -Dexec.mainClass="org.example.Main"
+```
+
+### Example Session
+
+```
++-----------------------------------+
+| Choose what to calculate:         |
++-----------------------------------+
+| 1 -> Matrix, geben den Grad ein   |
+| 2 -> DistanzMatrix                |
+| 3 -> Exzentrizitaeten             |
+| 4 -> RaduisDurchmesseZentrum      |
+| 5 -> Komponenten Anzahl           |
+| 6 -> Weg Matrix                   |
+| 7 -> Artikulationen               |
+| 8 -> Bruecken                     |
+| 0 -> Exit                         |
++-----------------------------------+
+
+> 4
+    Radius/Durchmesser/Zentrum:
+rad(G)=2; dm(G)=3; Z(G)= {[2, 4]}
+```
+
+## Tech Stack
+
+- **Java** — core language
+- **Maven** — build tool
+- **No external dependencies** — pure Java standard library
 
 ## Author
 
